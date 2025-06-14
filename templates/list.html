@@ -1,0 +1,469 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hostel & PG Tracker</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            background-color: #f4f4f4;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+        .search-bar {
+            margin-left: 230px;
+            margin-top: 30px;
+            display: flex;
+            align-items: center;
+            position: relative;
+            width: 50%;
+        }
+        .search-bar input[type="text"] {
+            flex: 1;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px 0 0 5px;
+            font-size: 16px;
+        }
+        .search-bar button {
+            margin-left: 30px;
+            padding: 10px 20px;
+            border: none;
+            background-color: #ff5e3a;
+            color: #fff;
+            cursor: pointer;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+        .hostel-container {
+            display: flex;
+            align-items: flex-start;
+            margin: 20px;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            flex-wrap: wrap;
+            position: relative;
+        }
+        .hostel-container img {
+            width: 180px;
+            height: 150px;
+            margin-right: 20px;
+            border-radius: 5px;
+        }
+        .hostel-details {
+            flex: 1;
+        }
+        .hostel-details h2 {
+            margin: 0;
+            font-size: 20px;
+            margin-bottom: 10px;
+        }
+        .hostel-details p {
+            margin: 0;
+            color: #666;
+            font-size: 16px;
+        }
+        .view-map-btn {
+            margin-top: 10px;
+            padding: 8px 16px;
+            background-color: #ff5e3a;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        .view-map-btn:hover {
+            background-color: #ff3a1a;
+        }
+        .map-container {
+            margin-top: 10px;
+            position: relative;
+            width: 100%;
+        }
+        .close-map-btn {
+            margin-top: -60px;
+            padding: 8px 16px;
+            background-color: #333;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            position: absolute;
+            right: 10px;
+            top: -40px;
+        }
+        .close-map-btn:hover {
+            background-color: #555;
+        }
+        .autocomplete-items {
+            position: absolute;
+            border: 1px solid #d4d4d4;
+            border-top: none;
+            z-index: 3;
+            width: calc(100% - 22px);
+            max-height: 150px;
+            overflow-y: auto;
+            top: calc(100% + 5px);
+            left: 0;
+            background-color: #fff;
+            margin-top: 5px;
+        }
+        .autocomplete-item {
+            padding: 10px;
+            cursor: pointer;
+            border-bottom: 1px solid #d4d4d4;
+        }
+        .autocomplete-item:last-child {
+            border-bottom: none;
+        }
+        .autocomplete-item:hover {
+            background-color: #e9e9e9;
+        }
+        .container {
+            width: 80%;
+            margin: auto;
+            overflow: hidden;
+        }
+        header {
+            background: #333;
+            color: #fff;
+            padding: 20px 0;
+            display: flex;
+            align-items: center;
+        }
+        header h1 {
+            margin: 0;
+            flex: 1;
+        }
+        nav {
+            float: right;
+        }
+        nav ul {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
+        nav ul li {
+            display: inline;
+            margin-left: 20px;
+        }
+        nav ul li a {
+            color: #fff;
+            text-decoration: none;
+            font-weight: bold;
+        }
+        footer {
+            background: #333;
+            color: #fff;
+            text-align: center;
+            padding: 10px 0;
+            margin-top: auto;
+            width: 100%;
+        }
+        @media (max-width: 768px) {
+            .listing-card {
+                width: calc(50% - 20px);
+            }
+        }
+        @media (max-width: 480px) {
+            .listing-card {
+                width: 100%;
+            }
+            nav ul li {
+                display: block;
+                text-align: center;
+                margin: 10px 0;
+            }
+            header h1, nav {
+                float: none;
+                text-align: center;
+            }
+        }
+        #preloader {
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            background: #333;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .preloader-content {
+            text-align: center;
+            position: relative;
+        }
+
+        .circle {
+            position: absolute;
+            border: 4px solid transparent;
+            border-radius: 100%;
+            animation: spin 2s linear infinite;
+        }
+
+        .circle:nth-child(2) {
+            width: 30px;
+            height: 30px;
+            top: -20px;
+            left: -20px;
+            border-top-color: #ff5e3a;
+            animation: spin 1.5s linear infinite;
+        }
+
+        .circle:nth-child(3) {
+            width: 70px;
+            height: 70px;
+            top: -40px;
+            left: -40px;
+            border-top-color: #ffcc00;
+            animation: spin 2s linear infinite;
+        }
+
+        .circle:nth-child(4) {
+            width: 110px;
+            height: 110px;
+            top: -60px;
+            left: -60px;
+            border-top-color: #006400;
+            animation: spin 2.5s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        .recommended {
+            border: 2px solid #ffcc00; /* Golden yellow border */
+            position: relative;
+        }
+
+        .recommended-badge {
+            position: absolute;
+            bottom: 8px;
+            right: 10px;
+            background-color: #ffcc00;
+            color: #333;
+            padding: 4px 8px;
+            border-radius: 3px;
+            font-size: 12px;
+        }
+        #map {
+            height: 600px;
+            width: 80%;
+            z-index: 1; /* Ensure map stays behind autocomplete */
+            margin-bottom: 160px;
+            margin-left: 200px;
+        }
+        
+    </style>
+</head>
+<body>
+    <div id="preloader">
+        <div class="preloader-content">
+            <div class="preloader-image"></div>
+            <div class="circle circle1"></div>
+            <div class="circle circle2"></div>
+            <div class="circle circle3"></div>
+            <div class="circle circle4"></div>
+        </div>
+    </div>
+    <header>
+        <div class="container">
+            <img src="{{ url_for('static', filename='logo1.jpg') }}" alt="Logo" style="float: left; height: 40px; width: 40px; padding: 20px;">
+            <h1 style="padding-left: 10px;">Hostel & PG Tracker</h1>
+            <nav>
+                <ul>
+                    <li><a href="#">Home</a></li>
+                    <li><a href="#">About Us</a></li>
+                    <li><a href="#">Search</a></li>
+                    <li><a href="contact.php">Contact</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+    <h1>Welcome User!!</h1>
+    <div class="search-bar">
+        <input type="text" id="location" placeholder="Enter location"oninput="handleTyping(event)">
+        <button onclick="searchLocation()"><i class="fas fa-search"></i> Search</button>
+        <div id="autocomplete" class="autocomplete-items hidden"></div>
+    </div>
+    <br><br>
+<div id="map"></div>
+
+<div id="hostels-list" class="container"></div>
+
+<div id="analysis-button-container" class="container" style="text-align: center; margin-bottom: 20px;">
+    <button onclick="window.location.href='http://localhost:8501/'" class="view-map-btn" style="margin-top: 20px;">View Analysis</button>
+</div>
+
+<footer>
+    <div class="container">
+        <p>&copy; 2024 Hostel & PG Tracker. All rights reserved.</p>
+    </div>
+</footer>
+
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+<script>
+    const mapElement = document.getElementById('map');
+  
+    let map = L.map('map').setView([12.9716, 77.5946], 13); 
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+    }).addTo(map);
+
+    let markers = [];
+
+    function searchLocation() {
+        const location = document.getElementById('location').value.trim();
+        fetch('/search', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ location })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.error) {
+                alert(data.error);
+                return;
+            }
+
+            // Clear previous markers
+            markers.forEach(marker => map.removeLayer(marker));
+            markers = [];
+
+            if (data.hostels.length > 0) {
+                map.setView([data.hostels[0].lat, data.hostels[0].lon], 13);
+            }
+
+            data.hostels.forEach(hostel => {
+                const popupContent = `<b>${hostel.name}</b>, ${hostel.location}<br>`;
+                const marker = L.marker([hostel.lat, hostel.lon]).addTo(map)
+                    .bindPopup(popupContent).openPopup();
+                markers.push(marker);
+            });
+
+            const hostelsList = document.getElementById('hostels-list');
+            hostelsList.innerHTML = '';
+
+            data.hostels.forEach(hostel => {
+                const hostelContainer = document.createElement('div');
+                hostelContainer.classList.add('hostel-container');
+
+                const image = document.createElement('img');
+                image.src = hostel.image_url || 'default.jpg'; // Replace with default image URL
+                image.alt = hostel.name;
+                hostelContainer.appendChild(image);
+
+                const detailsDiv = document.createElement('div');
+                detailsDiv.classList.add('hostel-details');
+
+                const nameHeading = document.createElement('h2');
+                nameHeading.textContent = hostel.name;
+                detailsDiv.appendChild(nameHeading);
+
+                const locationPara = document.createElement('p');
+                locationPara.textContent = `Address: ${hostel.location}`;
+                detailsDiv.appendChild(locationPara);
+                
+                const ratingPara = document.createElement('p');
+            ratingPara.textContent = `Our Rating: ${hostel.avg_rating || 'N/A'}`;
+            detailsDiv.appendChild(ratingPara);
+
+
+                if (hostel.avg_rating && parseFloat(hostel.avg_rating) >= 4) {
+                    hostelContainer.classList.add('recommended');
+                    const recommendedBadge = document.createElement('div');
+                    recommendedBadge.classList.add('recommended-badge');
+                    recommendedBadge.textContent = 'Recommended';
+                    hostelContainer.appendChild(recommendedBadge);
+                }
+
+                const viewMapBtn = document.createElement('button');
+                viewMapBtn.textContent = 'View Location';
+                viewMapBtn.classList.add('view-map-btn');
+                viewMapBtn.addEventListener('click', () => {
+                    const embedMapUrl = hostel.map_embed_url;
+                    if (embedMapUrl) {
+                        const mapContainer = document.createElement('div');
+                        mapContainer.classList.add('map-container');
+                        mapContainer.innerHTML = `<iframe src="${embedMapUrl}" width="600" height="450" style="margin-left: 230px; margin-top: -40px" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>`;
+                        const closeMapBtn = document.createElement('button');
+                        closeMapBtn.textContent = 'Close Map';
+                        closeMapBtn.classList.add('close-map-btn');
+                        closeMapBtn.addEventListener('click', () => {
+                            mapContainer.remove();
+                            closeMapBtn.remove();
+                        });
+
+                        mapContainer.appendChild(closeMapBtn);
+                        detailsDiv.appendChild(mapContainer);
+                    } else {
+                        alert('Map URL not available for this hostel');
+                    }
+                });
+                detailsDiv.appendChild(viewMapBtn);
+                hostelContainer.appendChild(detailsDiv);
+                hostelsList.appendChild(hostelContainer);
+            });
+        })
+        .catch(error => console.error('Error:', error));
+    }
+
+    function handleTyping(event) {
+        const input = event.target.value.trim().toLowerCase();
+        const autocomplete = document.getElementById('autocomplete');
+        const locations = [
+            "Jayanagar", "Jakkur", "Malleswaram", "Whitefield", "Koramangala", "Hebbal", "Wilson Garden",
+            "Yelahanka New Town", "Sanjay Nagar", "KR Puram", "Marathahalli", "Langford Town", "Bellandur",
+            "Banashankari 3rd Stage", "Shanti Nagar", "J.P. Nagar", "HAL 2nd Stage", "Rajajinagar", "Bannerghatta Road","Vijayanagar",
+            "Hoodi", "BTM Layout", "Domlur", "Kaggadasapura", "Arekere", "HAL 3rd Stage", "EPIP Zone","Jayanagar 7th Block","Indiranagar","Banashankari 2nd Stage","Basaveshwar Nagar","Mahalakshmi Layout"
+        ];
+        const matches = locations.filter(location => location.toLowerCase().includes(input));
+        if (!input || matches.length === 0) {
+            autocomplete.classList.add('hidden');
+            autocomplete.innerHTML = '';
+            return;
+        }
+
+        autocomplete.innerHTML = '';
+        matches.forEach(match => {
+            const item = document.createElement('div');
+            item.classList.add('autocomplete-item');
+            item.textContent = match;
+            item.addEventListener('click', () => {
+                document.getElementById('location').value = match;
+                autocomplete.classList.add('hidden');
+                autocomplete.innerHTML = '';
+            });
+            autocomplete.appendChild(item);
+        });
+
+        autocomplete.classList.remove('hidden');
+    }
+</script>
+
+    <script>
+        var loader = document.getElementById("preloader");
+        setTimeout(function() {
+            loader.style.display = "none";
+        }, 5000);
+    </script>
+</body>
+</html>

@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Hostel & PG Tracker</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            background-color: #f4f4f4;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+        .search-bar {
+            margin: 20px;
+            display: flex;
+            align-items: center;
+        }
+        .search-bar input[type="text"] {
+            flex: 1;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px 0 0 5px;
+            font-size: 16px;
+        }
+        .search-bar button {
+            padding: 10px 20px;
+            border: none;
+            background-color: #ff5e3a;
+            color: #fff;
+            cursor: pointer;
+            border-radius: 0 5px 5px 0;
+            font-size: 16px;
+        }
+        .hostel-container {
+            display: flex;
+            align-items: center;
+            margin: 20px;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        .hostel-container img {
+            width: 150px;
+            height: auto;
+            margin-right: 20px;
+            border-radius: 5px;
+        }
+        .hostel-details {
+            flex: 1;
+        }
+        .hostel-details h2 {
+            margin: 0;
+            font-size: 20px;
+            margin-bottom: 10px;
+        }
+        .hostel-details p {
+            margin: 0;
+            color: #666;
+            font-size: 16px;
+        }
+        .view-map-btn {
+            margin-top: 10px;
+            padding: 8px 16px;
+            background-color: #ff5e3a;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        .view-map-btn:hover {
+            background-color: #ff3a1a;
+        }
+        #map {
+            height: 500px;
+            margin: 20px 0;
+        }
+        footer {
+            background: #333;
+            color: #fff;
+            text-align: center;
+            padding: 20px 0;
+            margin-top: auto;
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <img src="{{ url_for('static', filename='logo1.jpg') }}" alt="Logo" style="float: left; height: 40px; width: 40px; padding: 20px;">
+            <h1>Hostel & PG Tracker</h1>
+            <nav>
+                <ul>
+                    <li><a href="#">Home</a></li>
+                    <li><a href="#">About Us</a></li>
+                    <li><a href="#">Search</a></li>
+                    <li><a href="contact.php">Contact</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+    <div class="search-bar">
+        <input type="text" id="location" placeholder="Enter destination">
+        <button onclick="searchLocation()">Search</button>
+    </div>
+    <div id="map"></div>
+    <div id="hostels-list" class="container"></div>
+    <footer>
+        <div class="container">
+            <p>&copy; 2024 Hostel & PG Tracker. All rights reserved.</p>
+        </div>
+    </footer>
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    <script>
+        function searchLocation() {
+            const location = document.getElementById('location').value.trim();
+            fetch('/search', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ location })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.error) {
+                    alert(data.error);
+                    return;
+                }
+    
+                const hostelsList = document.getElementById('hostels-list');
+                hostelsList.innerHTML = '';
+    
+                // Initialize the map and set view to destination location
+                const map = L.map('map').setView([data.destination.lat, data.destination.lon], 14);
+    
+                // Add OpenStreetMap tiles
+                L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                    maxZoom: 19,
+                    attribution: '© OpenStreetMap'
+                }).addTo(map);
+    
+                // Add a marker for the destination
+                L.marker([data.destination.lat, data.destination.lon]).addTo(map)
+                    .bindPopup('Destination')
+                    .openPopup();
+    
+                // Add markers for the hostels
+                data.hostels.forEach(hostel => {
+                    const hostelContainer = document.createElement('div');
+                    hostelContainer.classList.add('hostel-container');
+    
+                    const image = document.createElement('img');
+                     // Replace with default image URL
+                    image.alt = hostel.name;
+                    hostelContainer.appendChild(image);
+    
+                    const detailsDiv = document.createElement('div');
+                    detailsDiv.classList.add('hostel-details');
+    
+                    const name = document.createElement('h2');
+                    name.textContent = hostel.name;
+                    detailsDiv.appendChild(name);
+    
+                    const locationPara = document.createElement('p');
+                    locationPara.textContent = `Location: ${hostel.location}`;
+                    detailsDiv.appendChild(locationPara);
+    
+                    const distance = document.createElement('p');
+                    distance.textContent = `Distance: ${hostel.distance.toFixed(2)} km`;
+                    detailsDiv.appendChild(distance);
+    
+                    const viewMapBtn = document.createElement('button');
+                    viewMapBtn.classList.add('view-map-btn');
+                    viewMapBtn.textContent = 'View on Map';
+                    viewMapBtn.onclick = () => {
+                        L.marker([hostel.latitude, hostel.longitude]).addTo(map)
+                            .bindPopup(hostel.name)
+                            .openPopup();
+                    };
+                    detailsDiv.appendChild(viewMapBtn);
+    
+                    hostelContainer.appendChild(detailsDiv);
+                    hostelsList.appendChild(hostelContainer);
+    
+                    // Add marker for hostel on the map
+                    L.marker([hostel.latitude, hostel.longitude]).addTo(map)
+                        .bindPopup(hostel.name);
+                });
+            })
+            .catch(error => console.error('Error:', error));
+        }
+    </script>
+    
+</body>
+</html>
