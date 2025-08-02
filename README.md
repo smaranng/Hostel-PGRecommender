@@ -27,7 +27,7 @@ This project is a location-based Hostel and PG Recommendation System that utiliz
 **Technologies Used**
 ---
 
-Frontend: HTML, CSS, JavaScript (Templates using Flask)
+Frontend: `HTML`  `CSS`  `JavaScript (Templates using Flask)`
 
 Backend: Python, Flask
 
