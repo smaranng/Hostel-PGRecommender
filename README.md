@@ -31,9 +31,9 @@ Frontend: `HTML`  `CSS`  `JavaScript (Templates using Flask)`
 
 Backend: `Python` `Flask`
 
-Database: MySQL (phpMyAdmin)
+Database: `MySQL (phpMyAdmin)`
 
-Machine Learning Models:
+Machine Learning Models used for Sentiment Analysis:
 
 TextBlob
 
