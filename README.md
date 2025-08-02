@@ -29,7 +29,7 @@ This project is a location-based Hostel and PG Recommendation System that utiliz
 
 Frontend: `HTML`  `CSS`  `JavaScript (Templates using Flask)`
 
-Backend: Python, Flask
+Backend: `Python` `Flask`
 
 Database: MySQL (phpMyAdmin)
 
