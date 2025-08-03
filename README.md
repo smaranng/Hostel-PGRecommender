@@ -50,15 +50,17 @@ Machine Learning Models used for Sentiment Analysis:
 
 - Users provide reviews and ratings for hostels and PGs.
 
--- The system preprocesses the text data.
+- The system preprocesses the text data.
 
-Sentiment analysis is performed using selected models.
+- Sentiment analysis is performed using selected models.
 
-Recommendations are generated based on sentiment scores and cost efficiency.
+- Recommendations are generated based on sentiment scores and cost efficiency.
 
-Results are displayed through dynamic web pages and graphical summaries.
+- Results are displayed through dynamic web pages and graphical summaries.
 
 Installation and Setup
+
+
 Clone the repository:
 
 
