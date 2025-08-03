@@ -67,13 +67,19 @@ Clone the repository:
 git clone https://github.com/smaranng/Hostel-PGRecommender.git
 ```
 
-Install the required Python packages:
+- Install the required Python packages:
 
-Set up the MySQL database and import the provided SQL dump.
+- Set up the MySQL database and import the provided SQL dump.
 
-Run the Flask server:
+- Run the Flask server:
+
+
+```bash
+
 
 python app.py
+```
+
 Access the application at:
 
 
