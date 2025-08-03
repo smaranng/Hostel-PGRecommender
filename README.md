@@ -122,7 +122,9 @@ http://localhost:5000
 
 - Incorporation of user preferences and filters.
 
-Contributing
+**Contributing**
+
+
 Contributions are welcome. Please create a pull request or open an issue for suggestions.
 
 
