@@ -82,35 +82,27 @@ python app.py
 
 Access the application at:
 
-
+```
 http://localhost:5000
-
+```
 
 **Folder Structure**
+---
+```
 
 ├── templates/
-
-
 │   ├── index.html
-
-
 │   ├── analysis.html
-
-
 ├── static/
-
-
 ├── sent.py(Streamlit)
-
-
 ├── app.py(Flask)
-
-
 ├── README.md
-
-
 └── pghms.sql
-Usage
+```
+
+***Usage**
+---
+
 Register or log in to the system.
 
 Search hostels and PGs based on location.
