@@ -41,9 +41,9 @@ Machine Learning Models used for Sentiment Analysis:
 
 `BERT`
 
-RoBERTa
+`RoBERTa`
 
-Recurrent Neural Networks (RNN)
+`Recurrent Neural Networks (RNN)`
 
 **System Architecture**
 Users provide reviews and ratings for hostels and PGs.
