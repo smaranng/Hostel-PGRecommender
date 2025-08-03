@@ -48,7 +48,7 @@ Machine Learning Models used for Sentiment Analysis:
 **System Architecture**
 ---
 
--- Users provide reviews and ratings for hostels and PGs.
+- Users provide reviews and ratings for hostels and PGs.
 
 -- The system preprocesses the text data.
 
