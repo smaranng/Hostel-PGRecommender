@@ -46,9 +46,11 @@ Machine Learning Models used for Sentiment Analysis:
 `Recurrent Neural Networks (RNN)`
 
 **System Architecture**
-Users provide reviews and ratings for hostels and PGs.
+---
 
-The system preprocesses the text data.
+-- Users provide reviews and ratings for hostels and PGs.
+
+-- The system preprocesses the text data.
 
 Sentiment analysis is performed using selected models.
 
