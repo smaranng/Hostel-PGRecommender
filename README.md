@@ -100,28 +100,29 @@ http://localhost:5000
 └── pghms.sql
 ```
 
-***Usage**
+**Usage**
 ---
 
-Register or log in to the system.
+- Register or log in to the system.
 
-Search hostels and PGs based on location.
+- Search hostels and PGs based on location.
 
-View sentiment analysis graphs and recommended options.
+- View sentiment analysis graphs and recommended options.
 
-Select the best accommodation based on reviews and cost.
+- Select the best accommodation based on reviews and cost.
 
-Future Enhancements
-Integration of real-time review updates.
+**Future Enhancements**
+---
 
-Mobile application support.
+- Integration of real-time review updates.
 
-Advanced NLP models for multi-language support.
+- Mobile application support.
 
-Incorporation of user preferences and filters.
+- Advanced NLP models for multi-language support.
+
+- Incorporation of user preferences and filters.
 
 Contributing
 Contributions are welcome. Please create a pull request or open an issue for suggestions.
 
-License
-This project is licensed under the MIT License.
+
