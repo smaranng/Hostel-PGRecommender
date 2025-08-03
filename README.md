@@ -58,13 +58,15 @@ Machine Learning Models used for Sentiment Analysis:
 
 - Results are displayed through dynamic web pages and graphical summaries.
 
-Installation and Setup
+**Installation and Setup**
 
 
 Clone the repository:
 
-
+```bash
 git clone https://github.com/smaranng/Hostel-PGRecommender.git
+```
+
 Install the required Python packages:
 
 Set up the MySQL database and import the provided SQL dump.
