@@ -121,6 +121,7 @@ http://localhost:5000
 - Advanced NLP models for multi-language support.
 
 - Incorporation of user preferences and filters.
+---
 
 **Contributing**
 
