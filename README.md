@@ -35,7 +35,7 @@ Database: `MySQL (phpMyAdmin)`
 
 Machine Learning Models used for Sentiment Analysis:
 
-`TextBlob`
+- `TextBlob`
 
 `VADER`
 
